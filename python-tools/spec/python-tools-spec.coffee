@@ -11,6 +11,27 @@ describe "PythonTools", ->
     runs ->
       pythonTools = atom.packages.getActivePackage('python-tools').mainModule
 
+  describe "when running jedi commands", ->
+    editor = null
+    beforeEach ->
+      waitsForPromise ->
+        atom.workspace.open('test.py')
+
+      runs ->
+        editor = atom.workspace.getActiveTextEditor()
+        editor.setText("""
+        import json
+        """)
+
+    it "does not send too many commands over time", ->
+      editor.setCursorBufferPosition(new Point(0, 9))
+      spyOn(pythonTools, 'handleJediToolsResponse')
+      waitsForPromise ->
+        pythonTools.jediToolsRequest('gotoDef')
+      waitsForPromise ->
+        pythonTools.jediToolsRequest('gotoDef').then ->
+          expect(pythonTools.handleJediToolsResponse.calls.length).toEqual(2)
+
   describe "when running the goto definitions command", ->
     editor = null
     beforeEach ->
@@ -61,6 +82,15 @@ describe "PythonTools", ->
           else
             expect(path).toMatch(/.*\/json\/__init__.py/)
 
+  describe "when tools.py gets an invalid request", ->
+    editor = null
+    beforeEach ->
+      waitsForPromise ->
+        atom.workspace.open('error.py')
+
+      runs ->
+        editor = atom.workspace.getActiveTextEditor()
+
   describe "when running the show usages command", ->
     editor = null
     beforeEach ->
@@ -85,7 +115,7 @@ describe "PythonTools", ->
             new Range(new Point(3, 6), new Point(3, 17)),
           ])
 
-    it "does alter current selection on no results", ->
+    it "doesn't alter current selection on no results", ->
       editor.setCursorBufferPosition(new Point(3, 2))
       waitsForPromise ->
         pythonTools.jediToolsRequest('usages').then ->
@@ -204,6 +234,13 @@ describe "PythonTools", ->
       )
       [notification] = atom.notifications.getNotifications()
       expect(notification.type).toBe 'info'
+
+    it "informs the user with an error notification on error", ->
+      pythonTools.handleJediToolsResponse(
+        "error": "this is a test error"
+      )
+      [notification] = atom.notifications.getNotifications()
+      expect(notification.type).toBe 'error'
 
     it "informs the user with an error notification on invalid type", ->
       pythonTools.handleJediToolsResponse(

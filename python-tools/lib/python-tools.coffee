@@ -233,6 +233,11 @@ PythonTools =
         ))
 
   handleJediToolsResponse: (response) ->
+    if 'error' of response
+      console.error response['error']
+      atom.notifications.addError(response['error'])
+      return
+
     if response['definitions'].length > 0
       editor = atom.workspace.getActiveTextEditor()
 
@@ -261,8 +266,6 @@ PythonTools =
             searchAllPanes: true
 
           atom.workspace.open(first_def['path'], options).then (editor) ->
-            # scroll to top first to get it centered correctly
-            editor.scrollToTop()
             editor.scrollToCursorPosition()
       else
         atom.notifications.addError(
@@ -293,7 +296,6 @@ PythonTools =
 
     return new Promise (resolve, reject) ->
       response = readline.question "#{JSON.stringify(payload)}\n", (response) ->
-        console.log "tools.py => #{response}"
         handleJediToolsResponse(JSON.parse(response))
         resolve()
 
