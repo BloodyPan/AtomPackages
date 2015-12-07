@@ -2,7 +2,7 @@
   "name": "linter-pylint",
   "linter-package": true,
   "main": "./lib/main",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Lint python on the fly, using pylint",
   "repository": {
     "type": "git",
@@ -56,10 +56,10 @@
     "url": "https://github.com/AtomLinter/linter-pylint/issues"
   },
   "homepage": "https://github.com/AtomLinter/linter-pylint#readme",
-  "_id": "linter-pylint@1.1.2",
-  "_shasum": "40d93a2c60efe3cb0da4dc3da1024ba8173e2634",
-  "_resolved": "file:../d-115112-12538-znf23q/package.tgz",
-  "_from": "../d-115112-12538-znf23q/package.tgz",
+  "_id": "linter-pylint@1.2.0",
+  "_shasum": "aae08f434a4c1885e736bf312c5cce5a792f3548",
+  "_resolved": "file:../d-115117-29280-1dz4fr3/package.tgz",
+  "_from": "../d-115117-29280-1dz4fr3/package.tgz",
   "_atomModuleCache": {
     "version": 1,
     "dependencies": [
@@ -85,7 +85,7 @@
       },
       {
         "name": "atom-package-deps",
-        "version": "3.0.5",
+        "version": "3.0.6",
         "path": "node_modules/atom-package-deps/lib/main.js"
       },
       {
