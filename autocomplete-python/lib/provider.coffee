@@ -11,7 +11,7 @@ module.exports =
   disableForSelector: '.source.python .comment, .source.python .string'
   inclusionPriority: 2
   suggestionPriority: 3
-  excludeLowerPriority: true
+  excludeLowerPriority: false
   cacheSize: 10
 
   _addEventListener: (editor, eventName, handler) ->
@@ -242,7 +242,7 @@ module.exports =
       @requests[payload.id] = editor
 
   _fuzzyFilter: (candidates, query) ->
-    if candidates.length isnt 0 and query isnt '.'
+    if candidates.length isnt 0 and query not in [' ', '.']
       filter ?= require('fuzzaldrin-plus').filter
       candidates = filter(candidates, query, key: 'text')
     return candidates
