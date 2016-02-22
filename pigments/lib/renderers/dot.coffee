@@ -9,7 +9,7 @@ class DotRenderer
     displayBuffer = colorMarker.marker.displayBuffer
     charWidth = displayBuffer.getDefaultCharWidth()
 
-    markers = displayBuffer.findMarkers {
+    markers = colorMarker.colorBuffer.getMarkerLayer().findMarkers {
       type: 'pigments-color'
       intersectsScreenRowRange: [range.end.row, range.end.row]
     }
@@ -22,6 +22,8 @@ class DotRenderer
     lineHeight = textEditor.getLineHeightInPixels()
     column = (screenLine.getMaxScreenColumn() + 1) * charWidth
     pixelPosition = textEditorElement.pixelPositionForScreenPosition(range.end)
+
+    return {} unless colorMarker.color?
 
     class: 'dot'
     style:

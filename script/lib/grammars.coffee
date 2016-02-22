@@ -5,6 +5,11 @@ _ = require 'underscore'
 GrammarUtils = require '../lib/grammar-utils'
 
 module.exports =
+  '1C (BSL)':
+    'File Based':
+      command: "oscript"
+      args: (context) -> ['-encoding=utf-8', context.filepath]
+
   AppleScript:
     'Selection Based':
       command: 'osascript'
@@ -46,20 +51,28 @@ module.exports =
       command: "scriptcs"
       args: (context) -> ['-script', context.filepath]
 
+  Clojure:
+    "Selection Based":
+      command: "lein"
+      args: (context)  -> ['exec', '-e', context.getCode()]
+    "File Based":
+      command: "lein"
+      args: (context) -> ['exec', context.filepath]
+
   CoffeeScript:
     "Selection Based":
       command: "coffee"
-      args: (context)  -> ['-e', '--cli', context.getCode()]
+      args: (context) -> GrammarUtils.CScompiler.args.concat [context.getCode()]
     "File Based":
       command: "coffee"
       args: (context) -> [context.filepath]
 
-  'CoffeeScript (Literate)':
-    "Selection Based":
-      command: "coffee"
-      args: (context)  -> ['-e', '--cli', context.getCode()]
-    "File Based":
-      command: "coffee"
+  "CoffeeScript (Literate)":
+    'Selection Based':
+      command: 'coffee'
+      args: (context) -> GrammarUtils.CScompiler.args.concat [context.getCode()]
+    'File Based':
+      command: 'coffee'
       args: (context) -> [context.filepath]
 
   Crystal:
@@ -142,10 +155,14 @@ module.exports =
 
   Java:
     "File Based":
-      command: "bash"
+      command: if GrammarUtils.OperatingSystem.isWindows() then "cmd" else "bash"
       args: (context) ->
         className = context.filename.replace /\.java$/, ""
-        args = ['-c', "javac -d /tmp '#{context.filepath}' && java -cp /tmp #{className}"]
+        args = []
+        if GrammarUtils.OperatingSystem.isWindows()
+          args = ["/c javac -Xlint #{context.filename} && start cmd /k java #{className}"]
+        else
+          args = ['-c', "javac -d /tmp '#{context.filepath}' && java -cp /tmp #{className}"]
         return args
 
   JavaScript:
@@ -201,6 +218,11 @@ module.exports =
       command: "latexmk"
       args: (context) -> ['-cd', '-quiet', '-pdf', '-pv', '-shell-escape', context.filepath]
 
+  'LaTeX Beamer':
+    "File Based":
+      command: "latexmk"
+      args: (context) -> ['-cd', '-quiet', '-pdf', '-pv', '-shell-escape', context.filepath]
+
   LilyPond:
     "File Based":
       command: "lilypond"
@@ -240,6 +262,14 @@ module.exports =
     "File Based":
       command: "lua"
       args: (context) -> [context.filepath]
+
+  MagicPython:
+    "Selection Based":
+      command: "python"
+      args: (context)  -> ['-u', '-c', context.getCode()]
+    "File Based":
+      command: "python"
+      args: (context) -> ['-u', context.filepath]
 
   MoonScript:
     "Selection Based":
@@ -326,12 +356,23 @@ module.exports =
   Perl:
     "Selection Based":
       command: "perl"
-      args: (context)  -> ['-e', context.getCode()]
+      args: (context) ->
+        code = context.getCode()
+        file = GrammarUtils.Perl.createTempFileWithCode(code)
+        [file]
     "File Based":
       command: "perl"
       args: (context) -> [context.filepath]
 
   "Perl 6":
+    "Selection Based":
+      command: "perl6"
+      args: (context)  -> ['-e', context.getCode()]
+    "File Based":
+      command: "perl6"
+      args: (context) -> [context.filepath]
+
+  "Perl 6 FE":
     "Selection Based":
       command: "perl6"
       args: (context)  -> ['-e', context.getCode()]
@@ -347,12 +388,18 @@ module.exports =
   Python:
     "Selection Based":
       command: "python"
-      args: (context)  -> ['-c', context.getCode()]
+      args: (context)  -> ['-u', '-c', context.getCode()]
     "File Based":
       command: "python"
-      args: (context) -> [context.filepath]
+      args: (context) -> ['-u', context.filepath]
 
   R:
+    "Selection Based":
+      command: "Rscript"
+      args: (context) ->
+        code = context.getCode()
+        file = GrammarUtils.R.createTempFileWithCode(code)
+        [file]
     "File Based":
       command: "Rscript"
       args: (context) -> [context.filepath]
@@ -406,7 +453,7 @@ module.exports =
   Rust:
     "File Based":
       command: "bash"
-      args: (context) -> ['-c', "rustc " + context.filepath + " -o /tmp/rs.out && /tmp/rs.out"]
+      args: (context) -> ['-c', "rustc '#{context.filepath}' -o /tmp/rs.out && /tmp/rs.out"]
 
   Makefile:
     "Selection Based":
@@ -452,10 +499,10 @@ module.exports =
 
   "Shell Script":
     "Selection Based":
-      command: "bash"
+      command: process.env.SHELL
       args: (context)  -> ['-c', context.getCode()]
     "File Based":
-      command: "bash"
+      command: process.env.SHELL
       args: (context) -> [context.filepath]
 
   "Shell Script (Fish)":
@@ -485,12 +532,12 @@ module.exports =
       args: (context) ->
         file = GrammarUtils.Nim.findNimProjectFile(context.filepath)
         path = GrammarUtils.Nim.projectDir(context.filepath)
-        ['-c', 'cd "' + path + '" && nim c --colors:on --hints:off --parallelBuild:1 -r "' + file + '" 2>&1']
+        ['-c', 'cd "' + path + '" && nim c --hints:off --parallelBuild:1 -r "' + file + '" 2>&1']
 
   Swift:
     "File Based":
-      command: "xcrun"
-      args: (context) -> ['swift', context.filepath]
+      command: "swift"
+      args: (context) -> [context.filepath]
 
   TypeScript:
     "Selection Based":
@@ -517,3 +564,8 @@ module.exports =
     "File Based":
       command: "octave"
       args: (context) -> ['-p', context.filepath.replace(/[^\/]*$/, ''), context.filepath]
+
+  Prolog:
+    "File Based":
+      command: "swipl"
+      args: (context) -> ['-f', context.filepath, '-t', 'main', '--quiet']

@@ -2,8 +2,11 @@
 {selectorsMatchScopeChain} = require './scope-helpers'
 {Selector} = require 'selector-kit'
 DefinitionsView = require './definitions-view'
+UsagesView = require './usages-view'
+RenameView = require './rename-view'
 InterpreterLookup = require './interpreters-lookup'
 log = require './log'
+_ = require 'underscore'
 filter = undefined
 
 module.exports =
@@ -46,10 +49,19 @@ module.exports =
       stdout: (data) =>
         @_deserialize(data)
       stderr: (data) =>
-        if data.indexOf('is not recognized as an internal or external command, operable program or batch file') > -1
+        if data.indexOf('is not recognized as an internal or external') > -1
           return @_noExecutableError(data)
         log.debug "autocomplete-python traceback output: #{data}"
-        if atom.config.get('autocomplete-python.outputProviderErrors')
+        if data.indexOf('jedi') > -1
+          if atom.config.get('autocomplete-python.outputProviderErrors')
+            atom.notifications.addWarning(
+              '''Looks like this error originated from Jedi. Please do not
+              report such issues in autocomplete-python issue tracker. Report
+              them directly to Jedi. Turn off `outputProviderErrors` setting
+              to hide such errors in future. Traceback output:''', {
+              detail: "#{data}",
+              dismissable: true})
+        else
           atom.notifications.addError(
             'autocomplete-python traceback output:', {
               detail: "#{data}",
@@ -80,6 +92,8 @@ module.exports =
     @disposables = new CompositeDisposable
     @subscriptions = {}
     @definitionsView = null
+    @usagesView = null
+    @renameView = null
     @snippetsManager = null
 
     try
@@ -102,18 +116,70 @@ module.exports =
       editor = atom.workspace.getActiveTextEditor()
       @_completeArguments(editor, editor.getCursorBufferPosition(), true)
 
+    atom.commands.add selector, 'autocomplete-python:show-usages', =>
+      editor = atom.workspace.getActiveTextEditor()
+      bufferPosition = editor.getCursorBufferPosition()
+      if @usagesView
+        @usagesView.destroy()
+      @usagesView = new UsagesView()
+      @getUsages(editor, bufferPosition).then (usages) =>
+        @usagesView.setItems(usages)
+
+    atom.commands.add selector, 'autocomplete-python:rename', =>
+      editor = atom.workspace.getActiveTextEditor()
+      bufferPosition = editor.getCursorBufferPosition()
+      @getUsages(editor, bufferPosition).then (usages) =>
+        if @renameView
+          @renameView.destroy()
+        if usages.length > 0
+          @renameView = new RenameView(usages)
+          @renameView.onInput (newName) =>
+            for fileName, usages of _.groupBy(usages, 'fileName')
+              [project, _relative] = atom.project.relativizePath(fileName)
+              if project
+                @_updateUsagesInFile(fileName, usages, newName)
+              else
+                log.debug 'Ignoring file outside of project', fileName
+        else
+          if @usagesView
+            @usagesView.destroy()
+          @usagesView = new UsagesView()
+          @usagesView.setItems(usages)
+
     atom.workspace.observeTextEditors (editor) =>
       # TODO: this should be deprecated in next stable release
       @_handleGrammarChangeEvent(editor, editor.getGrammar())
       editor.displayBuffer.onDidChangeGrammar (grammar) =>
         @_handleGrammarChangeEvent(editor, grammar)
 
+  _updateUsagesInFile: (fileName, usages, newName) ->
+    columnOffset = {}
+    atom.workspace.open(fileName, activateItem: false).then (editor) ->
+      buffer = editor.getBuffer()
+      for usage in usages
+        {name, line, column} = usage
+        columnOffset[line] ?= 0
+        log.debug 'Replacing', usage, 'with', newName, 'in', editor.id
+        log.debug 'Offset for line', line, 'is', columnOffset[line]
+        buffer.setTextInRange([
+          [line - 1, column + columnOffset[line]],
+          [line - 1, column + name.length + columnOffset[line]],
+          ], newName)
+        columnOffset[line] += newName.length - name.length
+      buffer.save()
+
   _handleGrammarChangeEvent: (editor, grammar) ->
     eventName = 'keyup'
     eventId = "#{editor.displayBuffer.id}.#{eventName}"
     if grammar.scopeName == 'source.python'
-      disposable = @_addEventListener editor, eventName, (event) =>
-        if event.keyIdentifier == 'U+0028'
+      disposable = @_addEventListener editor, eventName, (e) =>
+        bracketIdentifiers =
+          'U+0028': 'qwerty'
+          'U+0038': 'german'
+          'U+0035': 'azerty'
+          'U+0039': 'other'
+        if e.keyIdentifier of bracketIdentifiers
+          log.debug 'Trying to complete arguments on keyup event', e
           @_completeArguments(editor, editor.getCursorBufferPosition())
       @disposables.add disposable
       @subscriptions[eventId] = disposable
@@ -199,12 +265,8 @@ module.exports =
       bufferPosition.column].join()).digest('hex')
 
   _generateRequestConfig: ->
-    extraPaths = []
-    for p in atom.config.get('autocomplete-python.extraPaths').split(';')
-      for project in atom.project.getPaths()
-        modified = p.replace(/\$PROJECT/i, project)
-        if modified not in extraPaths
-          extraPaths.push(modified)
+    extraPaths = InterpreterLookup.applySubstitutions(
+      atom.config.get('autocomplete-python.extraPaths').split(';'))
     args =
       'extraPaths': extraPaths
       'useSnippets': atom.config.get('autocomplete-python.useSnippets')
@@ -220,14 +282,28 @@ module.exports =
   _completeArguments: (editor, bufferPosition, force) ->
     useSnippets = atom.config.get('autocomplete-python.useSnippets')
     if not force and useSnippets == 'none'
+      atom.commands.dispatch(document.querySelector('atom-text-editor'),
+                             'autocomplete-plus:activate')
       return
-    log.debug 'Trying to complete arguments after left parenthesis...'
     scopeDescriptor = editor.scopeDescriptorForBufferPosition(bufferPosition)
     scopeChain = scopeDescriptor.getScopeChain()
     disableForSelector = Selector.create(@disableForSelector)
     if selectorsMatchScopeChain(disableForSelector, scopeChain)
       log.debug 'Ignoring argument completion inside of', scopeChain
       return
+
+    # we don't want to complete arguments inside of existing code
+    lines = editor.getBuffer().getLines()
+    line = lines[bufferPosition.row]
+    prefix = line.slice(bufferPosition.column - 1, bufferPosition.column)
+    if prefix isnt '('
+      log.debug 'Ignoring argument completion with prefix', prefix
+      return
+    suffix = line.slice bufferPosition.column, line.length
+    if not /^(\)(?:$|\s)|\s|$)/.test(suffix)
+      log.debug 'Ignoring argument completion with suffix', suffix
+      return
+
     payload =
       id: @_generateRequestId(editor, bufferPosition)
       lookup: 'arguments'
@@ -242,7 +318,7 @@ module.exports =
       @requests[payload.id] = editor
 
   _fuzzyFilter: (candidates, query) ->
-    if candidates.length isnt 0 and query not in [' ', '.']
+    if candidates.length isnt 0 and query not in [' ', '.', '(']
       filter ?= require('fuzzaldrin-plus').filter
       candidates = filter(candidates, query, key: 'text')
     return candidates
@@ -303,6 +379,20 @@ module.exports =
     return new Promise (resolve) =>
       @requests[payload.id] = resolve
 
+  getUsages: (editor, bufferPosition) ->
+    payload =
+      id: @_generateRequestId(editor, bufferPosition)
+      lookup: 'usages'
+      path: editor.getPath()
+      source: editor.getText()
+      line: bufferPosition.row
+      column: bufferPosition.column
+      config: @_generateRequestConfig()
+
+    @_sendRequest(@_serialize(payload))
+    return new Promise (resolve) =>
+      @requests[payload.id] = resolve
+
   goToDefinition: (editor, bufferPosition) ->
     if not editor
       editor = atom.workspace.getActiveTextEditor()
@@ -318,4 +408,5 @@ module.exports =
 
   dispose: ->
     @disposables.dispose()
-    @provider.kill()
+    if @provider
+      @provider.kill()
