@@ -3,6 +3,7 @@
 {Selector} = require 'selector-kit'
 DefinitionsView = require './definitions-view'
 UsagesView = require './usages-view'
+OverrideView = require './override-view'
 RenameView = require './rename-view'
 InterpreterLookup = require './interpreters-lookup'
 log = require './log'
@@ -76,7 +77,7 @@ module.exports =
       else
         throw error
 
-    @provider.process.stdin.on 'error', (err) ->
+    @provider.process?.stdin.on 'error', (err) ->
       log.debug 'stdin', err
 
     setTimeout =>
@@ -125,6 +126,17 @@ module.exports =
       @getUsages(editor, bufferPosition).then (usages) =>
         @usagesView.setItems(usages)
 
+    atom.commands.add selector, 'autocomplete-python:override-method', =>
+      editor = atom.workspace.getActiveTextEditor()
+      bufferPosition = editor.getCursorBufferPosition()
+      if @overrideView
+        @overrideView.destroy()
+      @overrideView = new OverrideView()
+      @getMethods(editor, bufferPosition).then ({methods, indent, bufferPosition}) =>
+        @overrideView.indent = indent
+        @overrideView.bufferPosition = bufferPosition
+        @overrideView.setItems(methods)
+
     atom.commands.add selector, 'autocomplete-python:rename', =>
       editor = atom.workspace.getActiveTextEditor()
       bufferPosition = editor.getCursorBufferPosition()
@@ -147,10 +159,13 @@ module.exports =
           @usagesView.setItems(usages)
 
     atom.workspace.observeTextEditors (editor) =>
-      # TODO: this should be deprecated in next stable release
       @_handleGrammarChangeEvent(editor, editor.getGrammar())
       editor.displayBuffer.onDidChangeGrammar (grammar) =>
         @_handleGrammarChangeEvent(editor, grammar)
+
+    atom.config.onDidChange 'autocomplete-plus.enableAutoActivation', =>
+      atom.workspace.observeTextEditors (editor) =>
+        @_handleGrammarChangeEvent(editor, editor.getGrammar())
 
   _updateUsagesInFile: (fileName, usages, newName) ->
     columnOffset = {}
@@ -172,6 +187,9 @@ module.exports =
     eventName = 'keyup'
     eventId = "#{editor.displayBuffer.id}.#{eventName}"
     if grammar.scopeName == 'source.python'
+      if not atom.config.get('autocomplete-plus.enableAutoActivation')
+        log.debug 'Ignoring keyup events due to autocomplete-plus settings.'
+        return
       disposable = @_addEventListener editor, eventName, (e) =>
         bracketIdentifiers =
           'U+0028': 'qwerty'
@@ -392,6 +410,25 @@ module.exports =
     @_sendRequest(@_serialize(payload))
     return new Promise (resolve) =>
       @requests[payload.id] = resolve
+
+  getMethods: (editor, bufferPosition) ->
+    indent = bufferPosition.column
+    lines = editor.getBuffer().getLines()
+    lines.splice(bufferPosition.row + 1, 0, "  def __autocomplete_python(s):")
+    lines.splice(bufferPosition.row + 2, 0, "    s.")
+    payload =
+      id: @_generateRequestId(editor, bufferPosition)
+      lookup: 'methods'
+      path: editor.getPath()
+      source: lines.join('\n')
+      line: bufferPosition.row + 2
+      column: 6
+      config: @_generateRequestConfig()
+
+    @_sendRequest(@_serialize(payload))
+    return new Promise (resolve) =>
+      @requests[payload.id] = (methods) ->
+        resolve({methods, indent, bufferPosition})
 
   goToDefinition: (editor, bufferPosition) ->
     if not editor
