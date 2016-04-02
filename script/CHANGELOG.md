@@ -1,3 +1,22 @@
+## 3.6.3
+
+* Fix bug prevents the package from disabling and updating
+
+## 3.6.2
+
+* Fix running of atom://config files
+
+## 3.6.1
+
+* Fix bug prevents the package from loading
+
+## 3.6.0
+
+* Support ioLanguage
+* Ability to set working directory
+* File based prolog command runs swipl from file directory
+* Templated args support
+
 ## 3.5.2
 
 * Support `LaTeX Beamer`

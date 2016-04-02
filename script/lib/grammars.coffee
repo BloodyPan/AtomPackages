@@ -124,6 +124,12 @@ module.exports =
       command: "cucumber"
       args: (context) -> ['--color', context.fileColonLine()]
 
+  gnuplot:
+    "File Based":
+      command: "gnuplot"
+      args: (context) -> ['-p', context.filepath]
+      workingDirectory: atom.workspace.getActivePaneItem()?.buffer?.file?.getParent?().getPath?()
+
   Go:
     "File Based":
       command: "go"
@@ -152,6 +158,14 @@ module.exports =
     "File Based":
       command: "iced"
       args: (context) -> [context.filepath]
+
+  ioLanguage:
+    "Selection Based":
+      command: "io"
+      args: (context) -> [context.getCode()]
+    "File Based":
+      command: "io"
+      args: (context) -> ['-e', context.filepath]
 
   Java:
     "File Based":
@@ -567,5 +581,5 @@ module.exports =
 
   Prolog:
     "File Based":
-      command: "swipl"
-      args: (context) -> ['-f', context.filepath, '-t', 'main', '--quiet']
+      command: "bash"
+      args: (context) -> ['-c', 'cd \"' + context.filepath.replace(/[^\/]*$/, '') + '\"; swipl -f \"' + context.filepath + '\" -t main --quiet']

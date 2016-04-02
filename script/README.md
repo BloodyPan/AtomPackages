@@ -30,9 +30,11 @@ Currently supported grammars are:
   * Erlang <sup>[†](#dagger)</sup>
   * F# <sup>[*](#asterisk)</sup>
   * Forth (via GForth)
+  * Gnuplot
   * Go <sup>[*](#asterisk)</sup>
   * Groovy
   * Haskell
+  * ioLanguage (http://iolanguage.org/)
   * Java <sup>[***](#triple-asterisk)</sup>
   * Javascript
   * [JavaScript for Automation](https://developer.apple.com/library/mac/releasenotes/InterapplicationCommunication/RN-JavaScriptForAutomation/Articles/Introduction.html) (JXA)
@@ -169,6 +171,18 @@ clipboard, allowing you to paste it into the editor.
 | Script: Run with profile   | <kbd>shift-cmd-k</kbd>              | <kbd>shift-ctrl-alt-b</kbd> | Runs the selection or whole file with the specified profile                   |
 | Script: Close View         | <kbd>esc</kbd> or <kbd>ctrl-w</kbd> | <kbd>esc</kbd>              | Closes the script view window                                                 |
 | Script: Kill Process       | <kbd>ctrl-c</kbd>                   | <kbd>ctrl-q</kbd>           | Kills the current script process                                              |
+
+### Replacements
+
+The following parameters will be replaced in any entry in `args` (command and program arguments). They should all be enclosed in curly brackets `{}`
+
+  * `{FILE_ACTIVE}` - Full path to the currently active file in Atom. E.g. `/home/rgbkrk/atom-script/lib/script.coffee`
+  * `{FILE_ACTIVE_PATH}` - Full path to the folder where the currently active file is. E.g. `/home/rgbkrk/atom-script/lib`
+  * `{FILE_ACTIVE_NAME}` - Full name and extension of active file. E.g., `script.coffee`
+  * `{FILE_ACTIVE_NAME_BASE}` - Name of active file WITHOUT extension. E.g., `script`
+  * `{PROJECT_PATH}` - Full path to the root of the project. This is normally the path Atom has as root. E.g `/home/rgbkrk/atom-script`
+
+Parameters are compatible with `atom-build` package.
 
 ## Development
 
