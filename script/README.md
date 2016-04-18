@@ -2,8 +2,6 @@
 
 [![Build Status](http://img.shields.io/travis/rgbkrk/atom-script.svg?style=flat)](https://travis-ci.org/rgbkrk/atom-script)
 
-[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.svg)](https://gratipay.com/rgbkrk/)
-
 **Run code in Atom!**
 
 Run scripts based on file name, a selection of code, or by line number.
@@ -38,6 +36,7 @@ Currently supported grammars are:
   * Java <sup>[***](#triple-asterisk)</sup>
   * Javascript
   * [JavaScript for Automation](https://developer.apple.com/library/mac/releasenotes/InterapplicationCommunication/RN-JavaScriptForAutomation/Articles/Introduction.html) (JXA)
+  * Jolie <sup>[*](#asterisk)</sup>
   * Julia
   * Kotlin
   * LaTeX (via latexmk)
@@ -91,7 +90,7 @@ You only have to add a few lines in a PR to support another.
 
 <a name="dagger"></a><sup>†</sup> Erlang uses `erl` for limited selection based runs (see [#70](https://github.com/rgbkrk/atom-script/pull/70))
 
-<a name="asterisk"></a><sup>*</sup> Cucumber (Gherkin), D, Go, F#, Literate Haskell, OCaml, PowerShell, and Swift do not support selection based runs
+<a name="asterisk"></a><sup>*</sup> Cucumber (Gherkin), D, Go, F#, Literate Haskell, Jolie, OCaml, PowerShell, and Swift do not support selection based runs
 
 <a name="omega"></a><sup>⍵</sup> Lisp selection based runs are limited to single line
 
@@ -186,7 +185,11 @@ Parameters are compatible with `atom-build` package.
 
 ## Development
 
-Use the atom [contributing guidelines](https://atom.io/docs/latest/contributing).
+This is an [Open Open Source Project](http://openopensource.org/), which means:
+
+> Individuals making significant and valuable contributions are given commit-access to the project to contribute as they see fit.
+
+As for coding and contributing, rely on the atom [contributing guidelines](https://atom.io/docs/latest/contributing).
 They're pretty sane.
 
 #### Quick and dirty setup

@@ -45,6 +45,10 @@ module.exports =
       "File Based":
         command: "bash"
         args: (context) -> ['-c', "xcrun clang++ -fcolor-diagnostics -Wc++11-extensions -Wall -include stdio.h -include iostream '" + context.filepath + "' -o /tmp/cpp.out && /tmp/cpp.out"]
+    else if GrammarUtils.OperatingSystem.isLinux()
+      "File Based":
+        command: "bash"
+        args: (context) -> ["-c", "g++ -Wall -include stdio.h -include iostream '" + context.filepath + "' -o /tmp/cpp.out && /tmp/cpp.out"]
 
   'C# Script File':
     "File Based":
@@ -133,7 +137,10 @@ module.exports =
   Go:
     "File Based":
       command: "go"
-      args: (context) -> ['run', context.filepath]
+      args: (context) ->
+        if context.filepath.match(/_test.go/) then ['test', '' ]
+        else ['run', context.filepath]
+      workingDirectory: atom.workspace.getActivePaneItem()?.buffer?.file?.getParent?().getPath?()
 
   Groovy:
     "Selection Based":
@@ -174,7 +181,7 @@ module.exports =
         className = context.filename.replace /\.java$/, ""
         args = []
         if GrammarUtils.OperatingSystem.isWindows()
-          args = ["/c javac -Xlint #{context.filename} && start cmd /k java #{className}"]
+          args = ["/c javac -Xlint #{context.filename} && java #{className}"]
         else
           args = ['-c', "javac -d /tmp '#{context.filepath}' && java -cp /tmp #{className}"]
         return args
@@ -202,6 +209,11 @@ module.exports =
     "File Based":
       command: "osascript"
       args: (context) -> ['-l', 'JavaScript', context.filepath]
+
+  Jolie:
+    "File Based":
+      command: "jolie"
+      args: (context) -> [context.filepath]
 
   Julia:
     "Selection Based":
@@ -346,7 +358,7 @@ module.exports =
         command: "bash"
         args: (context) -> ['-c', "xcrun clang++ -fcolor-diagnostics -Wc++11-extensions -Wall -include stdio.h -include iostream -framework Cocoa " + context.filepath + " -o /tmp/objc-cpp.out && /tmp/objc-cpp.out"]
 
-  ocaml:
+  OCaml:
     "File Based":
       command: "ocaml"
       args: (context) -> [context.filepath]
