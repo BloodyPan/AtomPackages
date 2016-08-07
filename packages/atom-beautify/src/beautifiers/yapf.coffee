@@ -8,6 +8,7 @@ Beautifier = require('./beautifier')
 module.exports = class Yapf extends Beautifier
 
   name: "yapf"
+  link: "https://github.com/google/yapf"
 
   options: {
     Python: false
@@ -15,8 +16,21 @@ module.exports = class Yapf extends Beautifier
 
   beautify: (text, language, options) ->
     @run("yapf", [
-      ["--style=pep8"]
-      @tempFile("input", text)
+      "-i"
+      tempFile = @tempFile("input", text)
       ], help: {
         link: "https://github.com/google/yapf"
-      })
+      }, ignoreReturnCode: true)
+      .then(=>
+        if options.sort_imports
+          @run("isort",
+            [tempFile],
+            help: {
+              link: "https://github.com/timothycrosley/isort"
+          })
+          .then(=>
+            @readFile(tempFile)
+          )
+        else
+          @readFile(tempFile)
+      )

@@ -1,7 +1,7 @@
 {
   "name": "python-tools",
   "main": "./lib/python-tools",
-  "version": "0.6.7",
+  "version": "0.6.8",
   "description": "Goto definition, show usages, refactor/rename and more for python files",
   "keywords": [
     "python",
@@ -25,10 +25,10 @@
     "url": "https://github.com/MichaelAquilina/python-tools/issues"
   },
   "homepage": "https://github.com/MichaelAquilina/python-tools#readme",
-  "_id": "python-tools@0.6.7",
-  "_shasum": "1006ea49bf6e8fc2022749f18dd4c5dfcc6f924f",
-  "_resolved": "file:../d-115112-12603-1yxi7pa/package.tgz",
-  "_from": "../d-115112-12603-1yxi7pa/package.tgz",
+  "_id": "python-tools@0.6.8",
+  "_shasum": "40ebdebd2327039652bd1414b73428334d4045d0",
+  "_resolved": "file:../d-11666-22551-1og3nv9/package.tgz",
+  "_from": "../d-11666-22551-1og3nv9/package.tgz",
   "_atomModuleCache": {
     "version": 1,
     "dependencies": [],

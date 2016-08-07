@@ -56,12 +56,15 @@ class ColorMarker
     range = @marker.getBufferRange()
 
     try
-      scope = @marker.displayBuffer.scopeDescriptorForBufferPosition(range.start)
+      scope = if @colorBuffer.editor.scopeDescriptorForBufferPosition?
+        @colorBuffer.editor.scopeDescriptorForBufferPosition(range.start)
+      else
+        @colorBuffer.editor.displayBuffer.scopeDescriptorForBufferPosition(range.start)
       scopeChain = scope.getScopeChain()
 
       return if not scopeChain or (!forceEvaluation and scopeChain is @lastScopeChain)
 
-      @ignored = @colorBuffer.ignoredScopes.some (scopeRegExp) ->
+      @ignored = (@colorBuffer.ignoredScopes ? []).some (scopeRegExp) ->
         scopeChain.match(scopeRegExp)
 
       @lastScopeChain = scopeChain
@@ -76,17 +79,38 @@ class ColorMarker
 
   invalidateScreenRangeCache: -> @screenRangeCache = null
 
-  convertContentToHex: ->
-    hex = '#' + fill(@color.hex, 6)
+  convertContentToHex: -> @convertContentInPlace('hex')
 
-    @marker.displayBuffer.buffer.setTextInRange(@marker.getBufferRange(), hex)
+  convertContentToRGB: -> @convertContentInPlace('rgb')
 
-  convertContentToRGB: ->
-    rgba = "rgb(#{Math.round @color.red}, #{Math.round @color.green}, #{Math.round @color.blue})"
+  convertContentToRGBA: -> @convertContentInPlace('rgba')
 
-    @marker.displayBuffer.buffer.setTextInRange(@marker.getBufferRange(), rgba)
+  convertContentToHSL: -> @convertContentInPlace('hsl')
 
-  convertContentToRGBA: ->
-    rgba = "rgba(#{Math.round @color.red}, #{Math.round @color.green}, #{Math.round @color.blue}, #{@color.alpha})"
+  convertContentToHSLA: -> @convertContentInPlace('hsla')
 
-    @marker.displayBuffer.buffer.setTextInRange(@marker.getBufferRange(), rgba)
+  copyContentAsHex: -> atom.clipboard.write(@convertContent('hex'))
+
+  copyContentAsRGB: -> atom.clipboard.write(@convertContent('rgb'))
+
+  copyContentAsRGBA: -> atom.clipboard.write(@convertContent('rgba'))
+
+  copyContentAsHSL: -> atom.clipboard.write(@convertContent('hsl'))
+
+  copyContentAsHSLA: -> atom.clipboard.write(@convertContent('hsla'))
+
+  convertContentInPlace: (mode) ->
+    @colorBuffer.editor.getBuffer().setTextInRange(@marker.getBufferRange(), @convertContent(mode))
+
+  convertContent: (mode) ->
+    switch mode
+      when 'hex'
+        '#' + fill(@color.hex, 6)
+      when 'rgb'
+        "rgb(#{Math.round @color.red}, #{Math.round @color.green}, #{Math.round @color.blue})"
+      when 'rgba'
+        "rgba(#{Math.round @color.red}, #{Math.round @color.green}, #{Math.round @color.blue}, #{@color.alpha})"
+      when 'hsl'
+        "hsl(#{Math.round @color.hue}, #{Math.round @color.saturation}%, #{Math.round @color.lightness}%)"
+      when 'hsla'
+        "hsla(#{Math.round @color.hue}, #{Math.round @color.saturation}%, #{Math.round @color.lightness}%, #{@color.alpha})"
