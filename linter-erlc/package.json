@@ -1,40 +1,133 @@
 {
-  "name": "linter-erlc",
-  "version": "0.3.0",
-  "linter-package": true,
-  "main": "./lib/init",
+  "_args": [
+    [
+      {
+        "raw": "/private/var/folders/lr/zk996cp56cg9t66dvdm4hk_m0000gn/T/d-118220-57657-1qd73s5.761rlik9/package.tgz",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "/private/var/folders/lr/zk996cp56cg9t66dvdm4hk_m0000gn/T/d-118220-57657-1qd73s5.761rlik9/package.tgz",
+        "spec": "/private/var/folders/lr/zk996cp56cg9t66dvdm4hk_m0000gn/T/d-118220-57657-1qd73s5.761rlik9/package.tgz",
+        "type": "local"
+      },
+      "/private/var/folders/lr/zk996cp56cg9t66dvdm4hk_m0000gn/T/apm-install-dir-118220-57657-9x69s2.9orum1jor"
+    ]
+  ],
+  "_from": "../d-118220-57657-1qd73s5.761rlik9/package.tgz",
+  "_id": "linter-erlc@0.4.0",
+  "_inCache": true,
+  "_location": "/linter-erlc",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "/private/var/folders/lr/zk996cp56cg9t66dvdm4hk_m0000gn/T/d-118220-57657-1qd73s5.761rlik9/package.tgz",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "/private/var/folders/lr/zk996cp56cg9t66dvdm4hk_m0000gn/T/d-118220-57657-1qd73s5.761rlik9/package.tgz",
+    "spec": "/private/var/folders/lr/zk996cp56cg9t66dvdm4hk_m0000gn/T/d-118220-57657-1qd73s5.761rlik9/package.tgz",
+    "type": "local"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:../d-118220-57657-1qd73s5.761rlik9/package.tgz",
+  "_shasum": "af3bdeaa810c647362bdef912ad687c555437a62",
+  "_shrinkwrap": null,
+  "_spec": "/private/var/folders/lr/zk996cp56cg9t66dvdm4hk_m0000gn/T/d-118220-57657-1qd73s5.761rlik9/package.tgz",
+  "_where": "/private/var/folders/lr/zk996cp56cg9t66dvdm4hk_m0000gn/T/apm-install-dir-118220-57657-9x69s2.9orum1jor",
+  "bugs": {
+    "url": "https://github.com/AtomLinter/linter-erlc/issues"
+  },
+  "configSchema": {
+    "executablePath": {
+      "type": "string",
+      "default": "erlc"
+    },
+    "includeDirs": {
+      "type": "array",
+      "description": "A comma separated list of paths included by erlc with the -I flag",
+      "default": [],
+      "items": {
+        "type": "string"
+      }
+    },
+    "pa": {
+      "type": "array",
+      "description": "A comma separated list of paths added with the -pa flag",
+      "default": [],
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "dependencies": {
+    "atom-linter": "^10.0.0",
+    "atom-package-deps": "^4.0.1",
+    "tmp": "^0.0.33"
+  },
   "description": "Bare Minimum Erlang lint package",
+  "devDependencies": {
+    "eslint": "^4.3.0",
+    "eslint-config-airbnb-base": "^11.3.1",
+    "eslint-plugin-import": "^2.7.0",
+    "jasmine-fix": "^1.3.0"
+  },
+  "engines": {
+    "atom": ">=1.4.0 <2.0.0"
+  },
+  "eslintConfig": {
+    "extends": "airbnb-base",
+    "rules": {
+      "global-require": "off",
+      "import/no-unresolved": [
+        "error",
+        {
+          "ignore": [
+            "atom"
+          ]
+        }
+      ]
+    },
+    "globals": {
+      "atom": true
+    },
+    "env": {
+      "node": true,
+      "browser": true
+    }
+  },
+  "homepage": "https://github.com/AtomLinter/linter-erlc#readme",
+  "keywords": [
+    "atom",
+    "erlang",
+    "linter",
+    "erlc"
+  ],
+  "license": "MIT",
+  "main": "./lib/init",
+  "name": "linter-erlc",
+  "optionalDependencies": {},
+  "package-deps": [
+    "linter",
+    "language-erlang"
+  ],
+  "private": true,
+  "providedServices": {
+    "linter": {
+      "versions": {
+        "1.0.0": "provideLinter"
+      }
+    }
+  },
+  "readme": "# linter-erlc\n\nThis linter plugin for [Linter](https://github.com/AtomLinter/Linter) provides an interface to erlc. It will be used with files that have the \"source.erlang\" syntax.\n\n\n## Installation\nLinter package must be installed in order to use this plugin. If Linter is not installed, please follow the instructions [here](https://github.com/AtomLinter/Linter).\n\n### Plugin installation\n```\n$ apm install linter-erlc\n```\n\n## Settings\nAll of linter-erlc's settings are available from within Atom's settings menu.\nIf you prefer to manually edit the configuration file the following settings\nare available:\n\n*   `executablePath`: Defaults to `erlc`, allowing the `$PATH` to resolve the\n    correct location. If you need to override this specify the full path to\n    `erlc`.\n\n*   `includeDirs`: You can add a comma separated list of paths that need to be included by `erlc`. You can add relative paths to the project root directory. The project must be in OTP style for it to resolve the project root. For example: `includes, other/paths`.\n\n*   `pa`: A comma separated list of paths added with the -pa flag. For example `~/.ebin, /opt/ebins`\n",
+  "readmeFilename": "README.md",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AtomLinter/linter-erlc.git"
   },
-  "license": "MIT",
-  "engines": {
-    "atom": ">0.50.0"
+  "scripts": {
+    "lint": "eslint .",
+    "test": "apm test"
   },
-  "dependencies": {},
-  "readme": "# linter-erlc\n\nThis linter plugin for [Linter](https://github.com/AtomLinter/Linter) provides an interface to erlc. It will be used with files that have the \"source.erlang\" syntax.\n\n\n## Installation\nLinter package must be installed in order to use this plugin. If Linter is not installed, please follow the instructions [here](https://github.com/AtomLinter/Linter).\n\n### Plugin installation\n```\n$ apm install linter-erlc\n```\n\n## Settings\nYou can configure linter-elixirc by editing ~/.atom/config.cson (choose Open Your Config in Atom menu):\n\n```\n'linter-elixirc':\n  'erlcExecutablePath': null #erlc path. run 'which erlc' to find the path\n  'includeDirs': 'includes,other/paths' #comma seperated list of paths added with the -I flag\n\t'pa': '~/.ebin' #comma seperated list of paths added with the -pa flag.\n```\n",
-  "readmeFilename": "README.md",
-  "bugs": {
-    "url": "https://github.com/AtomLinter/linter-erlc/issues"
-  },
-  "homepage": "https://github.com/AtomLinter/linter-erlc#readme",
-  "_id": "linter-erlc@0.3.0",
-  "_shasum": "012e5641a055eb1a39711f50b1ecd203edd04bb7",
-  "_resolved": "file:../d-115113-32752-zld4zr/package.tgz",
-  "_from": "../d-115113-32752-zld4zr/package.tgz",
-  "_atomModuleCache": {
-    "version": 1,
-    "dependencies": [],
-    "extensions": {
-      ".coffee": [
-        "lib/init.coffee",
-        "lib/linter-erlc.coffee"
-      ],
-      ".json": [
-        "package.json"
-      ]
-    },
-    "folders": []
-  }
+  "version": "0.4.0"
 }

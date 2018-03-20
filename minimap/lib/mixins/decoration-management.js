@@ -1,10 +1,6 @@
-'use babel'
+'use strict'
 
-import _ from 'underscore-plus'
-import path from 'path'
-import Mixin from 'mixto'
-import {Emitter} from 'atom'
-import Decoration from '../decoration'
+let _, path, Emitter, Decoration
 
 /**
  * The mixin that provides the decorations API to the minimap editor
@@ -13,13 +9,15 @@ import Decoration from '../decoration'
  * This mixin is injected into the `Minimap` prototype, so every methods defined
  * in this file will be available on any `Minimap` instance.
  */
-export default class DecorationManagement extends Mixin {
+module.exports = class DecorationManagement {
 
   /**
    * Initializes the decorations related properties.
    */
   initializeDecorations () {
     if (this.emitter == null) {
+      if (!Emitter) { Emitter = require('atom').Emitter }
+
       /**
        * The minimap emitter, lazily created if not created yet.
        * @type {Emitter}
@@ -326,6 +324,8 @@ export default class DecorationManagement extends Mixin {
   decorateMarker (marker, decorationParams) {
     if (this.destroyed || marker == null) { return }
 
+    if (!Decoration) { Decoration = require('../decoration') }
+
     let {id} = marker
 
     if (decorationParams.type === 'highlight') {
@@ -353,7 +353,8 @@ export default class DecorationManagement extends Mixin {
     if (this.decorationMarkerChangedSubscriptions[id] == null) {
       this.decorationMarkerChangedSubscriptions[id] =
       marker.onDidChange((event) => {
-        let decorations = this.decorationsByMarkerId[id]
+        const decorations = this.decorationsByMarkerId[id]
+        const screenRange = marker.getScreenRange()
 
         this.invalidateDecorationForScreenRowsCache()
 
@@ -365,6 +366,9 @@ export default class DecorationManagement extends Mixin {
               decoration: decoration,
               event: event
             })
+            this.emitDecorationChanges(decoration.type, decoration)
+
+            decoration.screenRange = screenRange
           }
         }
         let oldStart = event.oldTailScreenPosition
@@ -425,6 +429,9 @@ export default class DecorationManagement extends Mixin {
   }
 
   getOriginatorPackageName () {
+    if (!_) { _ = require('underscore-plus') }
+    if (!path) { path = require('path') }
+
     const line = new Error().stack.split('\n')[3]
     const filePath = line.split('(')[1].replace(')', '')
     const re = new RegExp(
@@ -472,12 +479,12 @@ export default class DecorationManagement extends Mixin {
    * @access private
    */
   emitDecorationChanges (type, decoration) {
-    if (this.textEditor.isDestroyed()) { return }
+    if (this.editorDestroyed()) { return }
 
     this.invalidateDecorationForScreenRowsCache()
 
-    let range = decoration.marker.getScreenRange()
-    if (range == null) { return }
+    const range = decoration.screenRange
+    if (!range.start || !range.end) { return }
 
     this.emitRangeChanges(type, range, 0)
   }
@@ -572,7 +579,9 @@ export default class DecorationManagement extends Mixin {
     for (let i = 0, len = decorations.length; i < len; i++) {
       let decoration = decorations[i]
 
-      this.emitDecorationChanges(decoration.getProperties().type, decoration)
+      if (!this.adapter.editorDestroyed()) {
+        this.emitDecorationChanges(decoration.getProperties().type, decoration)
+      }
       this.emitter.emit('did-remove-decoration', {
         marker: marker,
         decoration: decoration

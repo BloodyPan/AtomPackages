@@ -1,3 +1,295 @@
+<a name="v4.29.7"></a>
+
+# v4.29.8 (2018-02-23)
+
+## :bug: Bug Fixes
+
+- Fix crash when used alongside tree-sitter grammars ([#650](https://github.com/atom-minimap/minimap/pull/650))
+
+# v4.29.7 (2017-09-18)
+
+## :bug: Bug Fixes
+
+- Guard against there being no visible screen row when the minimap is constructed ([b2012d034a](https://github.com/atom-minimap/minimap/commit/b2012d034a162e18dc4def10f9204d3d4286440d), [#626](https://github.com/atom-minimap/minimap/issues/626))
+
+<a name="v4.29.6"></a>
+# v4.29.6 (2017-08-09)
+
+## :bug: Bug Fixes
+
+- Adjust outline decoration rendering so that it doesn't leak over next lines ([8d0b51cc](https://github.com/atom-minimap/minimap/commit/8d0b51ccfb4bacab396e75cff12831daf0b6cfa3))
+- Fix issue where decorations were not properly removed from canvas ([6c856b9b](https://github.com/atom-minimap/minimap/commit/6c856b9b30653359805d8f2a587479e61b08407e))
+
+<a name="v4.29.5"></a>
+# v4.29.5 (2017-08-09)
+
+## :bug: Bug Fixes
+
+- Guard against pollDocument being something other than a function ([52273e70](https://github.com/atom-minimap/minimap/commit/52273e70a9ba60bfcc44b5fdbe28748b6ed4c9bc), [#625](https://github.com/atom-minimap/minimap/issues/625))
+
+<a name="v4.29.4"></a>
+# v4.29.4 (2017-08-09)
+
+## :bug: Bug Fixes
+
+- Fix left minimap positioning broken in Atom 1.19 ([68357079](https://github.com/atom-minimap/minimap/commit/6835707900bd52184fc81ac7d3f9b6e7c8b83ecd), [#623](https://github.com/atom-minimap/minimap/issues/623))
+
+<a name="v4.29.3"></a>
+# v4.29.3 (2017-07-27)
+
+## :bug: Bug Fixes
+
+- Guard against service usage after package is disabled in the same Atom session ([2f787bc7](https://github.com/atom-minimap/minimap/commit/2f787bc7649577df3fa9976b5b833018ac4bdccc), [#605](https://github.com/atom-minimap/minimap/issues/605))
+
+<a name="v4.29.2"></a>
+# v4.29.2 (2017-07-24)
+
+## :bug: Bug Fixes
+
+- Properly fix the issue with deprecated scroll method ([0552856a](https://github.com/atom-minimap/minimap/commit/0552856ae4250557a43bcd6dd58e84df9e24545e))
+- Fix error when redispatching scroll event ([b269eb87](https://github.com/atom-minimap/minimap/commit/b269eb87949b41a84b685f0db775f083ed44566f), [#614](https://github.com/atom-minimap/minimap/issues/614))
+- Fix independent minimap no longer working on latest atom version ([29bd6b35](https://github.com/atom-minimap/minimap/commit/29bd6b35c0e1c03ceac0ae97a6c8e493a7219f92))
+
+<a name="v4.29.1"></a>
+# v4.29.1 (2017-07-24)
+
+## :bug: Bug Fixes
+
+- Fix call of soon to be deprecated method ([1b761f2a](https://github.com/atom-minimap/minimap/commit/1b761f2ab5242bfc25652978506749fbdb75bcf2), [#598](https://github.com/atom-minimap/minimap/issues/598))
+
+<a name="v4.29.0"></a>
+# v4.29.0 (2017-07-19)
+
+Remove Kite promotion.
+
+<a name="v4.28.2"></a>
+# v4.28.2 (2017-05-02)
+
+## :bug: Bug Fixes
+
+- Fix access to deleted editor in attached callback ([03b8f952](https://github.com/atom-minimap/minimap/commit/03b8f952b63c481db466e48863033c3397a09881), [#590](https://github.com/atom-minimap/minimap/issues/590), [#591](https://github.com/atom-minimap/minimap/issues/591), [#592](https://github.com/atom-minimap/minimap/issues/592))
+
+<a name="v4.28.0"></a>
+# v4.28.0 (2017-04-27)
+
+## :sparkles: Features
+
+- Kite promotion ([16c11d82](https://github.com/atom-minimap/minimap/commit/16c11d82b889ce1260342e4fa7d6d1905c0fde45))
+
+<a name="v4.27.1"></a>
+# v4.27.1 (2017-04-05)
+
+## :bug: Bug Fixes
+
+- Fix flickers on retina screen with absolute mode adjustable height ([a81abbea](https://github.com/atom-minimap/minimap/commit/a81abbea715d329691272b3cb5d13317a50d3913))
+- Enable pointer events for visible area in adjusted absolute mode ([8210e1e9](https://github.com/atom-minimap/minimap/commit/8210e1e915fe94caf08066543e86293418fe7ce8), [#564](https://github.com/atom-minimap/minimap/issues/564))
+
+<a name="v4.27.0"></a>
+# v4.27.0 (2017-03-30)
+
+## :sparkles: Features
+
+- Implement configurable minimap redraw delay ([c1ec247d](https://github.com/atom-minimap/minimap/commit/c1ec247d0f94497d9bdfaaded9d2315d2767d1e0))
+
+## :racehorse: Performances
+
+- Epic performance boost for large files ([07e65ed8](https://github.com/atom-minimap/minimap/commit/07e65ed88d31a36d49749cc1b02c1fef993faa28))
+
+<a name="v4.26.8"></a>
+# v4.26.8 (2017-01-31)
+
+## :sparkles: Features
+
+- Add link to the quick-highlight integration ([7d417572](https://github.com/atom-minimap/minimap/commit/7d417572c5d61d9d6c11eae97f78dd515f4c4e0c))
+
+## :bug: Bug Fixes
+
+- Fix access to a text editor without component ([c4cd1508](https://github.com/atom-minimap/minimap/commit/c4cd1508e2fd86ebd4e023a6a483361566638377), [#551](https://github.com/atom-minimap/minimap/issues/551))
+
+<a name="v4.26.7"></a>
+# v4.26.7 (2017-01-18)
+
+## :bug: Bug Fixes
+
+- Fix drag offset on 1.13+ ([93550956](https://github.com/atom-minimap/minimap/commit/93550956554dc42c547856556ce607ef64c97da8), [#551](https://github.com/atom-minimap/minimap/issues/551))
+
+<a name="v4.26.6"></a>
+# v4.26.6 (2017-01-12)
+
+## :bug: Bug Fixes
+
+- No longer use getScreenRange to retrieve a marker's range when destroyed
+
+<a name="v4.26.5"></a>
+# v4.26.5 (2016-12-19)
+
+## :bug: Bug Fixes
+
+- Fix issue on master with destroyed decorations ([5791fb28](https://github.com/atom-minimap/minimap/commit/5791fb28d0bc9a257dc3a89852b3bb5d8e4ad432))
+
+<a name="v4.26.4"></a>
+# v4.26.4 (2016-11-30)
+
+## :bug: Bug Fixes
+
+- Fix error raised when a pane is destroyed ([cdcd2693](https://github.com/atom-minimap/minimap/commit/cdcd269353887403eac36322d5378662ce313e92), [#489](https://github.com/atom-minimap/minimap/issues/489))
+
+<a name="v4.26.3"></a>
+# v4.26.3 (2016-11-10)
+
+## :bug: Bug Fixes
+
+- Fix reading tokens of lines after the last one ([1a018112](https://github.com/atom-minimap/minimap/commit/1a0181126af2912110b6f5b12cc339d784a98386))
+
+<a name="v4.26.2"></a>
+# v4.26.2 (2016-11-10)
+
+## :racehorse: Performances
+
+- Speed up token rendering a bit ([216f6a88](https://github.com/atom-minimap/minimap/commit/216f6a88f9e14332e743f71af18d004b120c9a54))
+
+<a name="v4.26.1"></a>
+# v4.26.1 (2016-10-20)
+
+## :bug: Bug Fixes
+
+- Fix invalid overlay offset when minimap is not adjusted ([73b9917c](https://github.com/atom-minimap/minimap/commit/73b9917c11813c24209d3c14ec28cbcd8b8bb2e9))
+- Guard against destroyed editor in adapters and decorations manager ([252d4572](https://github.com/atom-minimap/minimap/commit/252d4572a150a4fb14260c6d89784f5da8459823), [#489](https://github.com/atom-minimap/minimap/issues/489))
+
+
+<a name="v4.26.0"></a>
+# v4.26.0 (2016-10-20)
+
+This version will only supports Atom `>= 1.13.0` and drops support of shadow DOM.
+
+## :bug: Bug Fixes
+
+- Fix quick settings button always visible when hovering the workspace ([ca1a3d80](https://github.com/atom-minimap/minimap/commit/ca1a3d807f31520aff0a770abc5975a56adcc106))
+
+## :arrow_up: Dependencies Update
+
+- Bump atom engine version ([573f7f76](https://github.com/atom-minimap/minimap/commit/573f7f76164049013ca4c068da9177cb1ec29d55))
+>>>>>>> d14caff3927634722a50ad3f348c676a88848ea3
+
+<a name="v4.25.7"></a>
+# v4.25.7 (2016-11-30)
+
+## :bug: Bug Fixes
+
+- Fix error raised when a pane is destroyed ([c5717e84](https://github.com/atom-minimap/minimap/commit/c5717e8431352bfe5c88cc206afb0d6e718d73b6), [#489](https://github.com/atom-minimap/minimap/issues/489))
+
+<a name="v4.25.5"></a>
+# v4.25.5 (2016-10-20)
+
+## :bug: Bug Fixes
+
+- Fix invalid overlay offset when minimap is not adjusted ([73b9917c](https://github.com/atom-minimap/minimap/commit/73b9917c11813c24209d3c14ec28cbcd8b8bb2e9))
+- Guard against destroyed editor in adapters and decorations manager ([252d4572](https://github.com/atom-minimap/minimap/commit/252d4572a150a4fb14260c6d89784f5da8459823), [#489](https://github.com/atom-minimap/minimap/issues/489))
+
+<a name="v4.25.4"></a>
+# v4.25.4 (2016-10-20)
+
+## :bug: Bug Fixes
+
+- Fix size change handler making scrolling in the minimap impossible ([f98b54df](https://github.com/atom-minimap/minimap/commit/f98b54dfb7d0dab2315bb4825edd8eca04cb2615))
+
+<a name="v4.25.3"></a>
+# v4.25.3 (2016-10-20)
+
+## :bug: Bug Fixes
+
+- Fix overlay margin applied even when minimap is on the right ([240e2b0b](https://github.com/atom-minimap/minimap/commit/240e2b0b1183a183f2ae1f4a8e3a423f2ed19b2e))
+
+<a name="v4.25.2"></a>
+# v4.25.2 (2016-10-20)
+
+## :bug: Bug Fixes
+
+- Fix invalid css value ([3eb581d0](https://github.com/atom-minimap/minimap/commit/3eb581d0d5d3db0c577bbb97ea2c08cdb451ac98))
+
+<a name="v4.25.1"></a>
+# v4.25.1 (2016-10-20)
+
+## :bug: Bug Fixes
+
+- Fix overlay offsets when minimap is on the left ([a0a38169](https://github.com/atom-minimap/minimap/commit/a0a38169a384e75083caea4c219fb70f35171b31))
+
+<a name="v4.25.0"></a>
+# v4.25.0 (2016-09-02)
+
+## :sparkles: Features
+
+- Add option to move the cursor when clicking to scroll in the minimap ([73f84fc0](https://github.com/atom-minimap/minimap/commit/73f84fc03e0b733ce7038f0391358ec40ec31d97), [#515](https://github.com/atom-minimap/minimap/issues/515))
+- Add tern-project settings ([dec0e7bd](https://github.com/atom-minimap/minimap/commit/dec0e7bd5689cf64649037c2ef658d1ba2d05f43))
+
+## :racehorse: Performances
+
+- Lazily load remaining dependencies ([b5419c36](https://github.com/atom-minimap/minimap/commit/b5419c36a11676d645be2eb844f081654c7c7cab))
+
+## :arrow_up: Dependencies Update
+
+- Bump engine version ([b4e70206](https://github.com/atom-minimap/minimap/commit/b4e702061ecb0b77a08909c98b9a10fdce400d8e))
+
+<a name="v4.24.7"></a>
+# v4.24.7 (2016-07-05)
+
+## :bug: Bug Fixes
+
+- Fix minimal width badly measured after a split pane ([1f97824e](https://github.com/atom-minimap/minimap/commit/1f97824e23706d10fb0c6e35da9000388d20ef46), [#497](https://github.com/atom-minimap/minimap/issues/497))
+- Add guard against duplicated minimap ([d782ed65](https://github.com/atom-minimap/minimap/commit/d782ed650775d82d32e3cd0c18105ca7e82acb59), [#504](https://github.com/atom-minimap/minimap/issues/504))
+
+<a name="v4.24.5"></a>
+# v4.24.5 (2016-06-14)
+
+## :bug: Bug Fixes
+
+- Fix invalid invisible regexp when show invisible is disabled ([5b762a54](https://github.com/atom-minimap/minimap/commit/5b762a540bbc812df583fb67ec58c3b27432c6c7), [#502](https://github.com/atom-minimap/minimap/issues/502))
+
+<a name="v4.24.4"></a>
+# v4.24.4 (2016-06-09)
+
+## :bug: Bug Fixes
+
+- Fix infinite loop in scroll top listener ([46b6f1fc](https://github.com/atom-minimap/minimap/commit/46b6f1fc894f22ec8a0c40cb93bef6df616c71b8), [#491](https://github.com/atom-minimap/minimap/issues/491))
+
+<a name="v4.24.3"></a>
+# v4.24.3 (2016-05-27)
+
+## :bug: Bug Fixes
+
+- Use a border to offset the visible area instead of a transform ([8e65b938](https://github.com/atom-minimap/minimap/commit/8e65b9384dd226670e6054cb45bec36a43dcb4e8), [#484](https://github.com/atom-minimap/minimap/issues/484))
+
+<a name="v4.24.2"></a>
+# v4.24.2 (2016-05-25)
+
+## :bug: Bug Fixes
+
+- Set the with-minimap attribute in attached callback ([478e5ef7](https://github.com/atom-minimap/minimap/commit/478e5ef75b6652329f7696ffffb03b56d6ac4066), [#487](https://github.com/atom-minimap/minimap/issues/487))
+- Add another guard when accessing tokenLinesForScreenRows ([80fd6533](https://github.com/atom-minimap/minimap/commit/80fd65332e396b818c67b1387742c2ddeb361c21))
+
+<a name="v4.24.1"></a>
+# v4.24.1 (2016-05-24)
+
+## :bug: Bug Fixes
+
+- Fix disappearing minimap on master ([9b7425f8](https://github.com/atom-minimap/minimap/commit/9b7425f88b500c9cf8ea7726a735beefbe42f560))
+
+<a name="v4.24.0"></a>
+# v4.24.0 (2016-05-21)
+
+## :sparkles: Features
+
+- Add a new adjustMinimapWidthOnlyIfSmaller  setting to disable CSS limitation ([cc7161e5](https://github.com/atom-minimap/minimap/commit/cc7161e57176eed177940776d994e358813fffcc), [#452](https://github.com/atom-minimap/minimap/issues/452))
+- Add a with-minimal attribute on text editors ([d76d4109](https://github.com/atom-minimap/minimap/commit/d76d410924c718d78d32c9ea819d51a0a983042a))  <br>Gives a way to hide the scrollbar only when a minimap is present, as
+  requested in #479
+
+## :bug: Bug Fixes
+
+- Fix error in minimal plugin generation dialog ([e72e2dd3](https://github.com/atom-minimap/minimap/commit/e72e2dd35bc1b65c8069d44e1e8f483260984e32), [#476](https://github.com/atom-minimap/minimap/issues/476))
+- Fix error raised when emitting changes and text editor is no longer referenced ([abc29f46](https://github.com/atom-minimap/minimap/commit/abc29f4648f7c8b3966e38673162e7a6558acf2e), [#482](https://github.com/atom-minimap/minimap/issues/482))
+- Add guard when calling tokenLinesForScreenRows ([fc2622f5](https://github.com/atom-minimap/minimap/commit/fc2622f561fc9508e3da12fe4e874b06ea28039b))
+- Fix linter issue ([f7d1878c](https://github.com/atom-minimap/minimap/commit/f7d1878c64f6ba290b37c510f74130f8d272fd24))
+
 <a name="v4.23.5"></a>
 # v4.23.5 (2016-05-06)
 
